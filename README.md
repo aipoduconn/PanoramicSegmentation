@@ -143,7 +143,8 @@ The main settings are in `config/train-config.yaml`:
 | Batch size | 24 (train), 8 (validation) |
 | Input size | 512 × 512 |
 | Loss | Class-weighted cross-entropy (background weight 0.005, tooth classes 0.1) + 0.5 × auxiliary-head loss |
-| Validation | 10% of the training data |
+| Training data | Original + augmented images (`params.data.use_augmented=false` for the step 1 baseline) |
+| Validation | 10% of the training radiographs, split by radiograph so that augmented copies stay in the same subset as their original |
 | Checkpointing | Every 2 epochs |
 
 ---

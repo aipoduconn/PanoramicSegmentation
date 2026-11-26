@@ -33,3 +33,4 @@ params:
       weight_aux: 0.5
   data:
     sets: "pan_set_1,pan_set_2,pan_set_3"
+    use_augmented: true

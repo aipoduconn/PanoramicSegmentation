@@ -49,6 +49,20 @@ def get_mask_trans(trans_img_height=256,trans_img_width=256):
         
     ])
 
+def split_by_radiograph(data, val_size, random_state=None):
+    """Split into train/validation sets by original radiograph.
+
+    Augmented rows keep the `set_name` and `img_id` of the radiograph they were
+    generated from, so each radiograph and all of its augmented copies end up in
+    the same subset and no augmented copy leaks across the split.
+    """
+    key = data["set_name"].astype(str) + "/" + data["img_id"].astype(str)
+    originals = key[data["type"] == "original"].drop_duplicates()
+    _, val_keys = train_test_split(originals, test_size=val_size, random_state=random_state)
+    is_val = key.isin(set(val_keys))
+    return data[~is_val], data[is_val]
+
+
 def get_optim(optim_name, model, lr, **optim_kwargs):
     if optim_name == 'AdamW':
         return torch.optim.AdamW(model.parameters(), lr=lr, **optim_kwargs)
@@ -187,12 +201,15 @@ def train(cfg):
     #Load data
     logger.info("Loading Data...")
     train_metadata_path = os.path.join(ROOT_DIR,TRAIN_DATA_PATH)
-    data = pd.read_csv(train_metadata_path).query("type=='original'")
+    data = pd.read_csv(train_metadata_path)
+    if not cfg.params.data.get("use_augmented", True):
+        data = data.query("type=='original'")
     if cfg.params.data.sets!="all":
         sets = [val.strip() for val in cfg.params.data.sets.split(",")]
         data = data.query("set_name in @sets")
         logger.info("Sets being trained:"+",".join(data['set_name'].drop_duplicates().tolist()))
-    train_data,val_data = train_test_split(data,test_size=cfg.params.val_size)
+    train_data,val_data = split_by_radiograph(data,cfg.params.val_size)
+    logger.info(f"Train: {len(train_data)} images, validation: {len(val_data)} images")
     
     
     #Preparing data
