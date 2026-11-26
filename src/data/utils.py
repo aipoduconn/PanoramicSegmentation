@@ -1,6 +1,6 @@
 import os
-CURRENT_PATH = os.getcwd()
-ROOT_DIR = CURRENT_PATH.split("PanaromicSegmentation")[0]+"PanaromicSegmentation/"
+# Repository root (two levels above this file), independent of the working directory
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + os.sep
 from pycocotools.coco import COCO
 from PIL import Image, ImageDraw
 import torch

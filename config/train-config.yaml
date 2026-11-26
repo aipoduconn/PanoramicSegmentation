@@ -33,12 +33,3 @@ params:
       weight_aux: 0.5
   data:
     sets: "pan_set_1,pan_set_2,pan_set_3"
-# Modify the training code to include iou score without background class: Done, but don't have confidence in scores
-# log test metrics, classwise metrics and images to experiment
-# Check this ignore_index thing by doing classwise metrics and see what is the differnce
-# Train again with bg weight and weight aux changed. Understand what is weight aux? How can we utilize it
-# Increase image resolution to 512 and try
-# Modify the weight of bg to 
-# See if you can remove LR scheduler
-# Can we try a bigger model with more data
-

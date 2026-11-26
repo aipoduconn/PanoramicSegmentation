@@ -1,8 +1,8 @@
 
 import ast
 import os
-CURRENT_PATH = os.getcwd()
-ROOT_DIR = CURRENT_PATH.split("PanaromicSegmentation")[0]+"PanaromicSegmentation/"
+# Repository root (two levels above this file), independent of the working directory
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + os.sep
 import sys
 sys.path.append(ROOT_DIR)
 import src.data.utils as ut
@@ -243,7 +243,7 @@ def infer_and_log(state_dict_path):
     
     pi = PanInference(model_name,state_dict_path,ROOT_DIR,num_classes,img_size=img_size)
 
-    csv_path = "/home/ubuntu/Documents/PanaromicSegmentation/data/metadata/test_data.csv"
+    csv_path = os.path.join(ROOT_DIR, "data/metadata/test_data.csv")
     pi.calc_predictions(csv_path,batch_size,test_sets)
     
     # print("Logging starts..")
@@ -269,26 +269,17 @@ def infer_and_log(state_dict_path):
     print(pi.metrics)
         
 def main():
-    state_dict_paths =[
-        # "s3://<YOUR_BUCKET>/artifacts/148418839595485829/166130c441cf417a9ef389c4b1f5ca19/artifacts/models/model_epoch_48",
-        # "s3://<YOUR_BUCKET>/artifacts/148418839595485829/de3758fca14b4912beda3ba4d85ac716/artifacts/models/model_epoch_52",
-        # "s3://<YOUR_BUCKET>/artifacts/148418839595485829/515bf4e6bd7440b4a1db1909c83cd73a/artifacts/models/model_epoch_66",
-        # "s3://<YOUR_BUCKET>/artifacts/148418839595485829/748a345b99234947b7128792bd45115b/artifacts/models/model_epoch_86",
-        # "s3://<YOUR_BUCKET>/artifacts/148418839595485829/bfe729d927194e2385fda3960f273606/artifacts/models/model_epoch_80",
-        "s3://<YOUR_BUCKET>/artifacts/148418839595485829/69ea416e875d433ea5326bf38832cf6b/artifacts/models/model_epoch_74",#512x512 peaceful-fox
-        # "s3://<YOUR_BUCKET>/artifacts/148418839595485829/ea363c06f8054d588a1bcb13367742fb/artifacts/models/model_epoch_44",
-        # "s3://<YOUR_BUCKET>/artifacts/148418839595485829/fe55f030212e4763ac35463ab03c77bc/artifacts/models/model_epoch_44"
-        ]
-    for sd_path in state_dict_paths:
+    import argparse
+    parser = argparse.ArgumentParser(description="Evaluate trained checkpoints on the test set.")
+    parser.add_argument(
+        "state_dict_uris", nargs="+",
+        help="MLflow artifact URI(s) of the model state dict, e.g. "
+             "s3://<bucket>/artifacts/<experiment_id>/<run_id>/artifacts/models/model_epoch_74",
+    )
+    args = parser.parse_args()
+    for sd_path in args.state_dict_uris:
         infer_and_log(sd_path)
 
 
 if __name__ == "__main__":
     main()
-
-
-        
-
-
-
-
