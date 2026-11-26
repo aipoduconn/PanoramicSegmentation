@@ -1,0 +1,16 @@
+src/data/__pycache__/*
+src/model/__pycache__/*
+data/annots/*
+data/augmented/*
+data/mask/*
+data/metadata/*
+data/raw_imgs/*
+model/*
+outputs
+src/data/.ipynb_checkpoints
+src/model/.ipynb_checkpoints/
+notebook/.ipynb_checkpoints/
+test/.ipynb_checkpoints
+test/notebook/.ipynb_checkpoints
+data/test_set/*
+home/*

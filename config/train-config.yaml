@@ -1,0 +1,44 @@
+s: false
+params:
+  exp_name: pan-segmentation
+  grad_acc_step: 1
+  val_size: 0.1
+  train_loader_worker_num: 2
+  val_loader_worker_num: 2
+  epochs: 60
+  learning_rate: 5e-4
+  img_size:
+    height: 512
+    width: 512
+  model:
+    name: deeplabv3_resnet50
+    num_seg_class: 33
+    log: True
+    save_epoch_interval: 2
+    kwargs: empty
+  batch_size:
+    train: 24
+    val: 8
+  optim:
+    name: AdamW
+    kwargs: empty
+  lr_scheduler:
+    name: cosine_schedule_with_warmup
+    kwargs:
+      num_warmup_steps: 50
+  loss:
+    name: DoubleCrossEntropyLoss
+    kwargs:
+      bg_weight: 0.005
+      weight_aux: 0.5
+  data:
+    sets: "pan_set_1,pan_set_2,pan_set_3"
+# Modify the training code to include iou score without background class: Done, but don't have confidence in scores
+# log test metrics, classwise metrics and images to experiment
+# Check this ignore_index thing by doing classwise metrics and see what is the differnce
+# Train again with bg weight and weight aux changed. Understand what is weight aux? How can we utilize it
+# Increase image resolution to 512 and try
+# Modify the weight of bg to 
+# See if you can remove LR scheduler
+# Can we try a bigger model with more data
+
